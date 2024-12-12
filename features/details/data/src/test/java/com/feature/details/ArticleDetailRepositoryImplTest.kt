@@ -38,7 +38,7 @@ class ArticleDetailRepositoryImplTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        repository = ArticleDetailRepositoryImpl(mockApi)
+        repository = ArticleDetailRepositoryImpl(mockApi, testDispatcher)
     }
 
     @Test

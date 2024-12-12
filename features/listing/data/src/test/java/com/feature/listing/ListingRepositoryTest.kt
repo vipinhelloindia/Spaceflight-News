@@ -33,7 +33,7 @@ class ListingRepositoryTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         listingRepositoryImpl =
-            ListingRepositoryImpl(spaceArticlesApi)
+            ListingRepositoryImpl(spaceArticlesApi,testDispatcher)
     }
 
     @Test
