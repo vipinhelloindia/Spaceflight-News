@@ -39,9 +39,6 @@ class ListingViewModel @Inject constructor(private val listingUseCase: ListingUs
                     }
                 }
 
-                is Resource.Loading -> {
-                    _viewState.update { ListingScreenState.Loading }
-                }
             }
         }
 

@@ -1,11 +1,16 @@
 package com.spaceflight.network
 
+import com.spaceflight.network.exception.HTTPNetworkException
 import com.spaceflight.network.exception.NoBodyException
 import com.spaceflight.network.exception.RequestFailureException
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import okhttp3.ResponseBody
+import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
 import strikt.api.expectThat
@@ -15,6 +20,12 @@ import strikt.assertions.isEqualTo
 class NetworkUtilTestCases {
 
     private val transformMock: (Int) -> String = { it.toString() }
+    private val dispatcher = StandardTestDispatcher()
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(dispatcher)
+    }
 
     @Test
     fun `given successful API call with valid response when safeApiCall is invoked then it returns Resource_Success with transformed data`() =
@@ -24,7 +35,7 @@ class NetworkUtilTestCases {
             coEvery { mockApiCall() } returns Response.success(42)
 
             // Act
-            val result = retrofitApiCall(mockApiCall, transformMock)
+            val result = retrofitApiCall(mockApiCall, transformMock, dispatcher)
 
             // Assert
             expectThat(result)
@@ -43,7 +54,7 @@ class NetworkUtilTestCases {
                 ResponseBody.create(null, "Error")
             )
 
-            val result = retrofitApiCall(mockApiCall, transformMock)
+            val result = retrofitApiCall(mockApiCall, transformMock, dispatcher)
 
             expectThat(result)
                 .isA<com.spaceflight.common.Resource.Failure>()
@@ -63,14 +74,14 @@ class NetworkUtilTestCases {
             coEvery { mockApiCall() } throws IllegalArgumentException("Invalid argument")
 
             // Act
-            val result = retrofitApiCall(mockApiCall, transformMock)
+            val result = retrofitApiCall(mockApiCall, transformMock, dispatcher)
 
             // Assert
             expectThat(result)
                 .isA<com.spaceflight.common.Resource.Failure>()
                 .and {
                     get { throwable }
-                        .isA<IllegalArgumentException>()
+                        .isA<HTTPNetworkException>()
                         .get { message }
                         .isEqualTo("Invalid argument")
                 }
@@ -82,7 +93,7 @@ class NetworkUtilTestCases {
             val mockApiCall = mockk<suspend () -> Response<Int>>()
             coEvery { mockApiCall() } returns Response.success(null)
 
-            val result = retrofitApiCall(mockApiCall, transformMock)
+            val result = retrofitApiCall(mockApiCall, transformMock, dispatcher)
 
             expectThat(result)
                 .isA<com.spaceflight.common.Resource.Failure>()

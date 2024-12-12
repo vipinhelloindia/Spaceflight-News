@@ -4,9 +4,11 @@ import com.spaceflight.common.Resource
 import com.spaceflight.network.exception.HTTPNetworkException
 import com.spaceflight.network.exception.NoBodyException
 import com.spaceflight.network.exception.RequestFailureException
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -14,9 +16,10 @@ import retrofit2.Response
  */
 suspend fun <T : Any, R : Any> retrofitApiCall(
     apiCall: suspend () -> Response<T>,
-    mapper: (T) -> R
+    mapper: (T) -> R,
+    dispatcher: CoroutineDispatcher
 ): Resource<R> {
-    return withContext(Dispatchers.IO) {
+    return withContext(dispatcher) {
         try {
             val response = apiCall()
             if (response.isSuccessful) {
@@ -30,7 +33,7 @@ suspend fun <T : Any, R : Any> retrofitApiCall(
                 Resource.Failure(RequestFailureException("${response.code()} : ${response.message()}"))
             }
         } catch (e: Exception) {
-            Resource.Failure(HTTPNetworkException())
+            Resource.Failure(HTTPNetworkException(e.message!!))
         }
     }
 }

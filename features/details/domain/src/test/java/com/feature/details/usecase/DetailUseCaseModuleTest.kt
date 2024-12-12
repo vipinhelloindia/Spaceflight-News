@@ -78,19 +78,6 @@ class DetailUseCaseModuleTest {
 
         }
 
-    @Test
-    fun `given the repository is loading when getArticleDetail is invoked then it returns loading`() =
-        runTest {
-            // Arrange
-            val articleID = "123"
-            coEvery { articleDetailRepository.getFeaturedArticles(articleID) } returns Resource.Loading
-
-            // Act
-            val result = articleDetailUseCase.getArticleDetail(articleID)
-
-            // Assert
-            expectThat(result).isA<Resource.Loading>()
-        }
 
     @Test
     fun `given the repository provides Success with Data when getArticleDetail is invoked then it returns success with article detail`() =

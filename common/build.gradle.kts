@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -42,7 +44,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.hilt.android.core)
+    kapt(libs.hilt.compiler)
     testImplementation(libs.junit)
-
 }

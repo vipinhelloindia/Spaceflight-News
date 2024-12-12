@@ -70,27 +70,6 @@ class ListingUseCaseTest {
         }
 
     @Test
-    fun `given listingRepository returns loading when getFeaturedArticles is invoked then it returns Resource_Loading`() =
-        runTest {
-            // Arrange
-            coEvery {
-                listingRepository.getFeaturedArticles(
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns Resource.Loading
-
-            // Act
-            val result = listingUseCase.getFeaturedArticles(2)
-
-            // Assert
-            expectThat(result).isA<Resource.Loading>()
-
-        }
-
-    @Test
     fun `given listingRepository returns data when getFeaturedArticles is invoked then it returns success with the data`() =
         runTest {
             coEvery {

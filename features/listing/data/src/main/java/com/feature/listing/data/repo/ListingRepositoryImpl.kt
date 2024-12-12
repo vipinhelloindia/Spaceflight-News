@@ -5,10 +5,15 @@ import com.feature.listing.data.api.SpaceArticlesApi
 import com.feature.listing.data.mapper.toArticle
 import com.feature.listing.model.Article
 import com.spaceflight.common.Resource
+import com.spaceflight.common.di.IoDispatcher
 import com.spaceflight.network.retrofitApiCall
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class ListingRepositoryImpl @Inject constructor(private val spaceArticlesApi: SpaceArticlesApi) :
+class ListingRepositoryImpl @Inject constructor(
+    private val spaceArticlesApi: SpaceArticlesApi,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) :
     ListingRepository {
 
     override suspend fun getFeaturedArticles(
@@ -30,7 +35,7 @@ class ListingRepositoryImpl @Inject constructor(private val spaceArticlesApi: Sp
                 articles.results.map {
                     it.toArticle()
                 }
-            }
+            }, dispatcher = ioDispatcher
         )
     }
 }

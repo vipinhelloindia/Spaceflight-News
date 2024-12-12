@@ -37,9 +37,6 @@ class ArticleDetailViewModel @Inject constructor(private val detailUseCase: Arti
                     _viewState.update { DetailScreenState.Error(result.throwable.message!!) }
                 }
 
-                is Resource.Loading -> {
-                    _viewState.update { DetailScreenState.Loading }
-                }
             }
         }
     }

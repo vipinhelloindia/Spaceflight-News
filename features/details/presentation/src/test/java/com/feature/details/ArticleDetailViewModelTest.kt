@@ -42,21 +42,6 @@ class ArticleDetailViewModelTest {
         }
 
     @Test
-    fun `given intent to fetch article detail when fetching starts then state is Loading`() =
-        runTest {
-            // Mock Loading state from the use case
-            coEvery { detailUseCase.getArticleDetail(any()) } returns Resource.Loading
-
-            viewModel.handleIntent(ArticleDetailIntent.FetchArticleDetail("article-id"))
-
-            viewModel.viewState.test {
-                expectThat(awaitItem())
-                    .isA<DetailScreenState.Loading>()
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
     fun `given successful response from use case when fetching completes then state is Success`() =
         runTest {
             val articleId = 1

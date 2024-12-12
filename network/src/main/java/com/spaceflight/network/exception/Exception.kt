@@ -2,6 +2,6 @@ package com.spaceflight.network.exception
 
 class NoBodyException : Exception()
 
-class RequestFailureException(s: String) : Exception(s)
+class RequestFailureException(message: String) : Exception(message)
 
-class HTTPNetworkException() : Exception()
+class HTTPNetworkException(message: String) : Exception(message)
